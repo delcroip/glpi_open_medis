@@ -54,10 +54,8 @@ function plugin_init_openmedis() {
   Plugin::registerClass('PluginOpenmedisMedicalDeviceModel');
   Plugin::registerClass('PluginOpenmedisMedicalDeviceType');
 
-  Plugin::registerClass('PluginOpenmedisMedicalAccessories', [
-   'addtabon'              => 'PluginOpenmedisMedicalDevice'
-   ]);
-   Plugin::registerClass('PluginOpenmedisMedicalAccessories_Item');
+  Plugin::registerClass('PluginOpenmedisMedicalAccessories');
+   Plugin::registerClass('PluginOpenmedisMedicalAccessories_Item', array('addtabon'=>'PluginOpenmedisMedicalDevice'));
    Plugin::registerClass('PluginOpenmedisMedicalAccessoryModel');
    Plugin::registerClass('PluginOpenmedisMedicalAccessoryType');
    Plugin::registerClass('PluginOpenmedisMedicalCategory'); 
