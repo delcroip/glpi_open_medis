@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+define('HIDEBRAND',True)
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -44,7 +45,7 @@ class PluginOpenmedisMedicalDevice extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem','PluginOpenmedisMedicalAccessories'];
+   static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem','PluginOpenmedisMedicalAccessories_Item'];
 
    static $rightname                   = 'plugin_openmedis';
    protected $usenotepad               = true;
@@ -101,7 +102,8 @@ class PluginOpenmedisMedicalDevice extends CommonDBTM {
       //$this->addStandardTab('Lock', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
-      //$this->addStandardTab('Planning', $ong, $options);
+      $this->addStandardTab('Planning', $ong, $options);
+      $this->addStandardTab('PluginOpenmedisMedicalAccessories_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
          //need metrology
       return $ong;
@@ -309,13 +311,14 @@ class PluginOpenmedisMedicalDevice extends CommonDBTM {
       echo "<td rowspan='$rowspan'>
             <textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Brand')."</td>\n";
-      echo "<td>";
-      Html::autocompletionTextField($this, "brand");
-      echo "</td>\n";
-      echo "</tr>\n";
+      if (! HIDEBRAND){
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Brand')."</td>\n";
+         echo "<td>";
+         Html::autocompletionTextField($this, "brand");
+         echo "</td>\n";
+         echo "</tr>\n";
+      }
 
       // Display auto inventory informations
       if (!empty($ID)
