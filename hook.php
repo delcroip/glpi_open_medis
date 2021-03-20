@@ -63,7 +63,11 @@ function plugin_openmedis_uninstall() {
                     "glpi_plugin_openmedis_medicalaccessories_items",
                     "glpi_plugin_openmedis_medicalaccessorymodels",
                     "glpi_plugin_openmedis_medicalaccessorytypes",
-                  "glpi_plugin_openmedis_utilization"];
+                  "glpi_plugin_openmedis_utilization",
+               "glpi_plugin_openmedis_medicalconsumables",
+               "glpi_plugin_openmedis_medicalconsumableitemtypes",
+               "glpi_plugin_openmedis_medicalconsumableitems_medicaldevicemodels",
+               "glpi_plugin_openmedis_medicalconsumableitems"];
 
    foreach ($tables as $table) {
       // too dangerous to drop table
@@ -90,7 +94,7 @@ function plugin_openmedis_uninstall() {
   PluginOpenmedisProfile::removeRightsFromSession();
   PluginOpenmedisProfile::uninstallProfile();
 
-  PluginOpenmedisMenu::removeRightsFromSession();
+
    return true;
 }
 
@@ -106,6 +110,7 @@ function plugin_openmedis_postinit() {
       $PLUGIN_HOOKS['item_purge']['openmedis'][$type]
          = ['PluginOpenmedisItem_MedicalDevice','cleanForItem'];
       CommonGLPI::registerStandardTab($type, 'PluginOpenmedisItem_MedicalDevice');
+      CommonGLPI::registerStandardTab($type, 'PluginOpenmedisMedicalConsumable');
    }
 
    $plugin = new Plugin();
@@ -159,7 +164,15 @@ function plugin_openmedis_getDatabaseRelations() {
                               "glpi_plugin_openmedis_medicaldevices"        => "entities_id"],
                      "glpi_states"
                      => ["glpi_plugin_openmedis_medicalaccessories_items" => "states_id",
-                     "glpi_plugin_openmedis_medicaldevices" => "states_id"]];
+                     "glpi_plugin_openmedis_medicaldevices" => "states_id"],
+                         "glpi_plugin_openmedis_medicalconsumableitems_medicaldevicemodels" => [
+                        "glpi_plugin_openmedis_medicalconsumableitems" => "plugin_openmedis_medicalconsumableitems_id",
+                        "glpi_plugin_openmedis_medicaldevicemodels" => "plugin_openmedis_medicaldevicemodels_id"
+                                          ],
+                     "glpi_plugin_openmedis_medicalconsumables" =>
+                     ["glpi_plugin_openmedis_medicaldevice" => "plugin_openmedis_medicaldevices_id",
+                     "glpi_plugin_openmedis_medicalconsumableitems" => "plugin_openmedis_medicalconsumableitems_id"],
+                     "glpi_plugin_openmedis_medicalconsumableitems" => ["glpi_plugin_openmedis_medicalconsumableitemtypes" => "plugin_openmedis_medicalconsumableitemtypes_id"]];
    } else {
       return [];
    }
@@ -174,7 +187,9 @@ function plugin_openmedis_getDropdown() {
                    'PluginOpenmedisMedicalDeviceCategory'   => PluginOpenmedisMedicalDeviceCategory::getTypeName(0),
                    'PluginOpenmedisMedicalDeviceModel'   => PluginOpenmedisMedicalDeviceModel::getTypeName(0),
                    'PluginOpenmedisMedicalAccessoryModel' =>  PluginOpenmedisMedicalAccessoryModel::getTypeName(0),
-                   'PluginOpenmedisUtilization' =>  PluginOpenmedisUtilization::getTypeName(0)];
+                   'PluginOpenmedisUtilization' =>  PluginOpenmedisUtilization::getTypeName(0),
+                   'PluginOpenmedisMedicalConsumableItemType' => PluginOpenmedisMedicalConsumableItemType::getTypeName(0)]
+                   ;
    } else {
       return [];
    }
@@ -217,7 +232,7 @@ function plugin_openmedis_addLeftJoin($type, $ref_table, $new_table,
      /* case "glpi_plugin_openmedis_medicaldevice" : // From items
          $out = Search::addLeftJoin($type, $ref_table, $already_link_tables,
                                    "glpi_plugin_openmedis_medicalaccessories_items",
-                                   "plugin_openmedis_medicaldevice_id");
+                                   "plugin_openmedis_medicaldevices_id");
          $out .= " LEFT JOIN `glpi_plugin_openmedis_medicaldevice`
                   ON (`glpi_plugin_openmedis_medicaldevice`.`id` = `glpi_plugin_openmedis_medicalaccessories_items`.`items_id`) ";
          */return $out;

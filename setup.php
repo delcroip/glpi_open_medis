@@ -26,7 +26,7 @@
  along with openmedis. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-define('OPENMEDIS_VERSION', '0.0.1');
+define('OPENMEDIS_VERSION', '0.0.2');
 
 function plugin_init_openmedis() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -55,14 +55,18 @@ function plugin_init_openmedis() {
   Plugin::registerClass('PluginOpenmedisMedicalDeviceType');
 
   Plugin::registerClass('PluginOpenmedisMedicalAccessories');
-   Plugin::registerClass('PluginOpenmedisMedicalAccessories_Item', array('addtabon'=>'PluginOpenmedisMedicalDevice'));
+   Plugin::registerClass('PluginOpenmedisMedicalAccessories_Item', 
+   array('addtabon'=>'PluginOpenmedisMedicalDevice'));
    Plugin::registerClass('PluginOpenmedisMedicalAccessoryModel');
    Plugin::registerClass('PluginOpenmedisMedicalAccessoryType');
    Plugin::registerClass('PluginOpenmedisMedicalCategory'); 
-  Plugin::registerClass('PluginOpenmedisProfile', [
-      'addtabon' => 'Profile',
-  ]); 
-  
+  Plugin::registerClass('PluginOpenmedisProfile',array('addtabon'=>'Profile'));
+  Plugin::registerClass('PluginOpenmedisMedicalConsumable',
+  array('addtabon'=>'PluginOpenmedisMedicalDevice'));
+
+  Plugin::registerClass('PluginOpenmedisMedicalConsumableItem_MedicalDeviceModel'); 
+  Plugin::registerClass('PluginOpenmedisMedicalConsumableItem'); 
+  Plugin::registerClass('PluginOpenmedisMedicalConsumableItemType'); 
 
 
   $plugin = new Plugin();    
@@ -72,7 +76,7 @@ function plugin_init_openmedis() {
       // $PLUGIN_HOOKS['javascript']['openmedis'][]   = '/plugins/openmedis/openmedis.js';
       if (Session::getLoginUserID()) {
          if (PluginOpenmedisMedicalDevice::canView()) {
-            $PLUGIN_HOOKS["menu_toadd"]['openmedis'] = ['assets'  => 'PluginOpenmedisMedicaldevice'];
+            $PLUGIN_HOOKS["menu_toadd"]['openmedis'] = ['assets'  => ['PluginOpenmedisMedicaldevice','PluginOpenmedisMedicalConsumable']qwasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss];
                   // Display a menu entry ?
 
             $PLUGIN_HOOKS['assign_to_ticket']['openmedis'] = true;
@@ -109,17 +113,17 @@ function plugin_version_openmedis() {
    return  ['name'           => _n('Health technologies management',
                                         'Health technologies management',
                                         2, 'openmedis'),
-                  'version'        => '0.0.1',
+                  'version'        => '0.0.2',
                   'license'        => 'GPLv2+',
                   'author'         => 'Patrick Delcroix',
                   'homepage'       => 'https://github.com/delcroip/glpi_openmedis',
-                  'minGlpiVersion' => '9.2'];
+                  'minGlpiVersion' => '9.5'];
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_openmedis_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.2', 'lt') ) {
-      echo __('This plugin requires GLPI >= 9.2');
+   if (version_compare(GLPI_VERSION, '9.5', 'lt') ) {
+      echo __('This plugin requires GLPI >= 9.5');
       return false;
    }
    return true;

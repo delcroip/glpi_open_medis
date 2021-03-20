@@ -34,6 +34,7 @@ class PluginOpenmedisProfile extends Profile
 
             self::addDefaultProfileInfos($ID,
                 ['plugin_openmedis' => __('Medical Device asset'),
+                'plugin_openmedis_consumable' => __('Medical Device consumable'),
                 'plugin_openmedis_models' => __('Medical Device Models'),
                 'plugin_openmedis_type' => __('Medical Device type'),
                 'plugin_openmedis_openticket' => __('OpenTicket for Medical Device')]);
@@ -52,6 +53,7 @@ class PluginOpenmedisProfile extends Profile
         ['plugin_openmedis' => 1,
         'plugin_openmedis_models' => 1,
         'plugin_openmedis_type' => 1,
+        'plugin_openmedis_consumable' => 1,
         'plugin_openmedis_openticket' => 7], true);
     }
 
@@ -142,9 +144,12 @@ class PluginOpenmedisProfile extends Profile
     static function getAllRights($all = false)
     {
         $rights = [
-            ['rights' => [READ => __('Read'), CREATE => __('Create'), UPDATE => __('Update'), DELETE => __('Delete')],
+            ['rights' => [READ => __('Read'), CREATE => __('Create'), UPDATE => __('Update'), DELETE => __('Delete'), READNOTE => __('Read notes'), UPDATENOTE => __('Update notes')],
                 'label' => __('Medical Device'),
-                'field' => 'plugin_openmedis'],
+                'field' => 'plugin_openmedis'],                ,
+                ['rights' =>[READ => __('Read'), CREATE => __('Create'), UPDATE => __('Update'), DELETE => __('Delete'), READNOTE => __('Read notes'), UPDATENOTE => __('Update notes')],
+                'label' => __('Medical Consumable'),
+                'field' => 'plugin_openmedis_consumable'],
                 ['rights' =>[READ => __('Read'), CREATE => __('Create'), UPDATE => __('Update'), DELETE => __('Delete')],
                 'label' => __('Type & category '),
                 'field' => 'plugin_openmedis_type'],
